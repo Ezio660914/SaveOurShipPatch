@@ -3,7 +3,7 @@
     <name>SaveOurShipPatch</name>
     <author>Fang</author>
     <packageId>Fang.SaveOurShipPatch</packageId>
-    <description>Save our ship 2 extension</description>
+    <description>This is my first practice of making mod. Just for fun.\nDescription: This mod adds an advanced salvage bay that directly converts ship wreckage into resources.\n\nWARNING: Currently this mod is likely to break the balance of the game.</description>
     <supportedVersions>
         <li>1.5</li>
     </supportedVersions>

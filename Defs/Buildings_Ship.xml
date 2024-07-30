@@ -27,7 +27,7 @@
             <MaxHitPoints>500</MaxHitPoints>
             <Flammability>0</Flammability>
         </statBases>
-        <description>Unlike the normal salvage bay, this version directly converts ship wrekages into resources</description>
+        <description>Unlike the normal salvage bay, this version directly converts ship wreckage into resources</description>
         <size>(5,5)</size>
         <designationCategory>Ship</designationCategory>
         <rotatable>false</rotatable>
