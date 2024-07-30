@@ -83,16 +83,10 @@ namespace SaveOurShipPatch
                     LetterDefOf.PositiveEvent, thing_list, null, null, null, null
                     );
             //destroy all ships in that map
-            try
+            while (targetMapComp.ShipsOnMap.Count > 0)
             {
-                foreach (var ship_index in targetMapComp.ShipsOnMap.Keys)
-                {
-                    ShipInteriorMod2.RemoveShipOrArea(salvage_map, ship_index);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Warning("" + e);
+                var ship_index = targetMapComp.ShipsOnMap.Keys.First();
+                ShipInteriorMod2.RemoveShipOrArea(salvage_map, ship_index);
             }
         }
     }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ModMetaData>
-    <name>SaveOurShipPatch</name>
+    <name>Save Our Ship 2 Advanced Salvage Bay</name>
     <author>Fang</author>
-    <packageId>Fang.SaveOurShipPatch</packageId>
-    <description>This is my first practice of making mod. Just for fun.\nDescription: This mod adds an advanced salvage bay that directly converts ship wreckage into resources.\n\nWARNING: Currently this mod is likely to break the balance of the game.</description>
+    <packageId>Fang.SaveOurShip2AdvancedSalvageBay</packageId>
+    <description>No more manual deconstruction!\n\nFeatures: This mod adds an advanced salvage bay that directly converts ship wreckage into resources. By clicking the "recycle" button after ship battle, drop pods contain resources (equal to the costs of all buildings on enemy ships) will be sent to your ship. At the same time enemy ships are removed. \n\nWARNING: This is my first practice of making mod. Just for fun. Currently it is likely to break the balance of the game.</description>
     <supportedVersions>
         <li>1.5</li>
     </supportedVersions>
