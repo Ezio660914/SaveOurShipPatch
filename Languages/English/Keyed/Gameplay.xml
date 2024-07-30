@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+    <SalvageDeconstructCommand>Recycle From {0}</SalvageDeconstructCommand>
+    <SalvageDeconstructCommandDesc>Recycle all ship salvages in map {0}</SalvageDeconstructCommandDesc>
+    <SalvageDeconstructDisabled>Condition not suitable</SalvageDeconstructDisabled>
+    <DropPodReceivedLabel>Resources Received</DropPodReceivedLabel>
+    <DropPodReceivedText>Recycled resources from salvages.\n{0}</DropPodReceivedText>
+</LanguageData>
