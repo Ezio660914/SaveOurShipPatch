@@ -32,24 +32,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ShipsHaveInsides">
-      <HintPath>..\..\..\..\..\..\..\@work\Projects\SaveOurShip2\1.5\Assemblies\ShipsHaveInsides.dll</HintPath>
-    </Reference>
-    <Reference Include="SmashTools">
-      <HintPath>..\..\..\..\..\..\..\@work\Projects\Vehicle-Framework\1.5\Assemblies\SmashTools.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Vehicles">
-      <HintPath>..\..\..\..\..\..\..\@work\Projects\Vehicle-Framework\1.5\Assemblies\Vehicles.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Command_DeconstructShipEnemy.cs" />
     <Compile Include="CompShipBaySalvageAdvanced.cs" />
+    <Compile Include="Dialog_Recycle.cs" />
+    <Compile Include="ModUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ShipsHaveInsides">
+      <HintPath>..\..\SaveOurShip2\1.5\Assemblies\ShipsHaveInsides.dll</HintPath>
+    </Reference>
+    <Reference Include="SmashTools">
+      <HintPath>..\..\Vehicle-Framework\1.5\Assemblies\SmashTools.dll</HintPath>
+    </Reference>
+    <Reference Include="Vehicles">
+      <HintPath>..\..\Vehicle-Framework\1.5\Assemblies\Vehicles.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Krafs.Rimworld.Ref">

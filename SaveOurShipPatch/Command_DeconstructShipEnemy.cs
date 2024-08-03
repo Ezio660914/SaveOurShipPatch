@@ -6,7 +6,6 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-
 namespace SaveOurShipPatch
 {
     public class Command_DeconstructShipEnemy : Command
@@ -17,14 +16,14 @@ namespace SaveOurShipPatch
         {
             this.player_map = player_map;
             this.salvage_map = salvage_map;
+
         }
         public override void ProcessInput(Event ev)
         {
             base.ProcessInput(ev);
-            ConvertShipToResources();
+            Find.WindowStack.Add(new Dialog_Recycle(player_map, salvage_map));
         }
-
-        public void ConvertShipToResources()
+        /*public void ConvertShipToResources()
         {
             ShipMapComp targetMapComp = salvage_map.GetComponent<ShipMapComp>();
             //Count all buildings costs in enemy ship map
@@ -88,6 +87,6 @@ namespace SaveOurShipPatch
                 var ship_index = targetMapComp.ShipsOnMap.Keys.First();
                 ShipInteriorMod2.RemoveShipOrArea(salvage_map, ship_index);
             }
-        }
+        }*/
     }
 }

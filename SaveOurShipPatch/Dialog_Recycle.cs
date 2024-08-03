@@ -1,0 +1,281 @@
+﻿using RimWorld;
+using SaveOurShip2;
+using UnityEngine;
+using Verse;
+using System.Linq;
+using RimWorld.Planet;
+using System.Collections.Generic;
+using Verse.Noise;
+using System;
+using Unity.Mathematics;
+using Verse.Sound;
+using System.Reflection;
+using UnityEngine.UIElements;
+namespace SaveOurShipPatch
+{
+
+    public class Dialog_Recycle : Window
+    {
+        private Map player_map;
+        private Map salvage_map;
+        public static Dictionary<Map, double> map_recycle_rate = new Dictionary<Map, double>();
+        private int num_salvage_bays;
+        private List<TransferableOneWay> transferables;
+        private TransferableOneWayWidget items_transfer;
+        private float cachedMassUsage;
+        private bool CountToTransferChanged { get; set; }
+        private float MassCapacity
+        {
+            get
+            {
+                if (ModSettings_SaveOurShipPatch.limit_mass_per_bay)
+                    return num_salvage_bays * ModSettings_SaveOurShipPatch.mass_per_bay;
+                else
+                    return float.PositiveInfinity;
+            }
+        }
+
+        private float MassUsage
+        {
+            get
+            {
+                if (CountToTransferChanged)
+                {
+                    CountToTransferChanged = false;
+                    cachedMassUsage = CollectionsMassCalculator.MassUsageTransferables(transferables, IgnorePawnsInventoryMode.IgnoreIfAssignedToUnload, includePawnsMass: true);
+                }
+                return cachedMassUsage;
+            }
+        }
+        private static readonly List<Pair<float, Color>> MassColor = new List<Pair<float, Color>>
+        {
+            new Pair<float, Color>(0.37f, Color.green),
+            new Pair<float, Color>(0.82f, Color.yellow),
+            new Pair<float, Color>(1f, new Color(1f, 0.6f, 0f))
+        };
+        private readonly Vector2 BottomButtonSize = new Vector2(160f, 40f);
+        public override Vector2 InitialSize => new Vector2(1024f, UI.screenHeight);
+        protected override float Margin => 0f;
+        public Dialog_Recycle(Map player_map, Map salvage_map)
+        {
+            this.player_map = player_map;
+            this.salvage_map = salvage_map;
+            if (!map_recycle_rate.ContainsKey(salvage_map))
+            {
+                map_recycle_rate[salvage_map] = Rand.Range((float)ModSettings_SaveOurShipPatch.RecycleRateMin, (float)ModSettings_SaveOurShipPatch.RecycleRateMax);
+                Log.Message("map recycle rate added: " + salvage_map.Parent.Label + ": {0}".Formatted(map_recycle_rate[salvage_map]));
+            }
+            this.num_salvage_bays = player_map.GetComponent<ShipMapComp>().Bays.Where(b => b is CompShipBaySalvage && b.parent.Faction == Faction.OfPlayer).Count();
+            forcePause = true;
+            absorbInputAroundWindow = true;
+        }
+        public override void PostOpen()
+        {
+            base.PostOpen();
+            CalculateAndRecacheTransferables();
+        }
+        private static Color GetMassColor(float massUsage, float massCapacity, bool lerpMassColor)
+        {
+            if (massCapacity == float.PositiveInfinity)
+            {
+                return Color.white;
+            }
+            if (massUsage > massCapacity)
+            {
+                return Color.red;
+            }
+            if (lerpMassColor)
+            {
+                return GenUI.LerpColor(MassColor, massUsage / massCapacity);
+            }
+            return Color.white;
+        }
+        public override void DoWindowContents(Rect inRect)
+        {
+            Rect rect = new Rect(0f, 0f, inRect.width, 35f);
+            Text.Font = GameFont.Medium;
+            Text.Anchor = TextAnchor.MiddleCenter;
+            Widgets.Label(rect, "RecycleShip".Translate(salvage_map.Parent.Label, map_recycle_rate[salvage_map].ToString("P0")));
+            Text.Font = GameFont.Small;
+            Text.Anchor = TextAnchor.UpperLeft;
+            Rect rect2 = new Rect(12f, 35f, inRect.width / 4f, 40f);
+            List<TransferableUIUtility.ExtraInfo> tmp_info = new List<TransferableUIUtility.ExtraInfo>();
+            TaggedString tagged_string = MassUsage.ToString() + " / " + MassCapacity.ToString("F0") + " " + "kg".Translate();
+            tmp_info.Add(new TransferableUIUtility.ExtraInfo("Mass".Translate(), tagged_string, GetMassColor(MassUsage, MassCapacity, true), ""));
+            TransferableUIUtility.DrawExtraInfo(tmp_info, rect2);
+            inRect.yMin += 119f;
+            inRect = inRect.ContractedBy(17f);
+            GUI.BeginGroup(inRect);
+            Rect rect3 = inRect.AtZero();
+            DoBottomButtons(rect3);
+            Rect inRect2 = rect3;
+            inRect2.yMax -= 59f;
+            bool anythingChanged = false;
+            items_transfer.OnGUI(inRect2, out anythingChanged);
+            if (anythingChanged)
+            {
+                CountToTransferChanged = true;
+            }
+            GUI.EndGroup();
+        }
+        private void DoBottomButtons(Rect rect)
+        {
+            Rect rect2 = new Rect(rect.width / 2f - BottomButtonSize.x / 2f, rect.height - 55f, BottomButtonSize.x, BottomButtonSize.y);
+            if (Widgets.ButtonText(rect2, "AcceptButton".Translate()))
+            {
+                if (TryAccept())
+                {
+                    if (transferables.Any(x => x.CountToTransfer > 0))
+                    {
+                        Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ConfirmRecycling".Translate(), delegate
+                        {
+                            SendDropPodsAndRemoveShips();
+                            SoundDefOf.Tick_High.PlayOneShotOnCamera();
+                            Close(doCloseSound: false);
+                        }));
+                    }
+                    else
+                    {
+                        SoundDefOf.Tick_High.PlayOneShotOnCamera();
+                        Close(doCloseSound: false);
+                    }
+                }
+            }
+            if (Widgets.ButtonText(new Rect(rect2.x - 10f - BottomButtonSize.x, rect2.y, BottomButtonSize.x, BottomButtonSize.y), "ResetButton".Translate()))
+            {
+                SoundDefOf.Tick_Low.PlayOneShotOnCamera();
+                CalculateAndRecacheTransferables();
+            }
+            if (Widgets.ButtonText(new Rect(rect2.x - 20f - BottomButtonSize.x * 2, rect2.y, BottomButtonSize.x, BottomButtonSize.y), "SelectEverything".Translate()))
+            {
+                SoundDefOf.Tick_High.PlayOneShotOnCamera();
+                SetToLoadEverything();
+            }
+        }
+        private bool TryAccept()
+        {
+            if (MassUsage > MassCapacity)
+            {
+                Messages.Message("TooBigTransportersMassUsage".Translate(), MessageTypeDefOf.RejectInput, historical: false);
+                return false;
+            }
+            return true;
+        }
+        private void SendDropPodsAndRemoveShips()
+        {
+            ShipMapComp targetMapComp = salvage_map.GetComponent<ShipMapComp>();
+            //send all resources to player's map using pod
+            List<Thing> thing_list = new List<Thing>();
+            string drop_pod_received_text = "";
+
+            foreach (TransferableOneWay tr in transferables)
+            {
+                Thing thing = ThingMaker.MakeThing(tr.ThingDef, null);
+                thing.stackCount = tr.CountToTransfer;
+                if (thing.stackCount > 0)
+                {
+                    TradeUtility.SpawnDropPod(DropCellFinder.TradeDropSpot(player_map), player_map, thing);
+                    drop_pod_received_text += thing.def.label + ": " + thing.stackCount.ToString() + "\n";
+                    thing_list.Add(thing);
+                }
+            }
+            if (thing_list.Count > 0)
+            {
+                Find.LetterStack.ReceiveLetter(
+                        "DropPodReceivedLabel".Translate(),
+                        "DropPodReceivedText".Translate(drop_pod_received_text),
+                        LetterDefOf.PositiveEvent, thing_list, null, null, null, null
+                        );
+
+                //destroy all ships in that map
+                while (targetMapComp.ShipsOnMap.Count > 0)
+                {
+                    var ship_index = targetMapComp.ShipsOnMap.Keys.First();
+                    ShipInteriorMod2.RemoveShipOrArea(salvage_map, ship_index);
+                }
+                Log.Message("map recycle rate removed: " + salvage_map.Parent.Label + ": {0}".Formatted(map_recycle_rate[salvage_map]));
+                map_recycle_rate.Remove(salvage_map);
+            }
+        }
+        private void SetToLoadEverything()
+        {
+            for (int i = 0; i < transferables.Count; i++)
+            {
+                transferables[i].AdjustTo(transferables[i].GetMaximumToTransfer());
+            }
+            CountToTransferChanged = true;
+        }
+        private void CalculateAndRecacheTransferables()
+        {
+            transferables = new List<TransferableOneWay>();
+            AddItemsToTransferables();
+            items_transfer = new TransferableOneWayWidget(transferables, null, null, "FormCaravanColonyThingCountTip".Translate(), drawMass: true, IgnorePawnsInventoryMode.Ignore, availableMassGetter: () => MassCapacity - MassUsage, drawMarketValue: true);
+            CountToTransferChanged = true;
+        }
+        public Dictionary<ThingDef, int> CountAllBuildingCost()
+        {
+            ShipMapComp targetMapComp = salvage_map.GetComponent<ShipMapComp>();
+            //Count all buildings costs in enemy ship map
+            HashSet<IntVec3> area = new HashSet<IntVec3>();
+            foreach (var ship_cache in targetMapComp.ShipsOnMap.Values)
+            {
+                area.AddRange(ship_cache.Area);
+            }
+            List<Thing> things = new List<Thing>();
+            foreach (IntVec3 pos in area)
+            {
+                foreach (Thing t in pos.GetThingList(salvage_map))
+                {
+                    if (!(t is Pawn) && !things.Contains(t))
+                    {
+                        things.Add(t);
+                    }
+                }
+            }
+            Dictionary<ThingDef, int> cost_list = new Dictionary<ThingDef, int>();
+            foreach (Thing t in things)
+            {
+                try
+                {
+                    if (t is Building && t.def.destroyable && !t.Destroyed)
+                    {
+                        foreach (var cost in t.def.costList)
+                        {
+                            if (!cost_list.ContainsKey(cost.thingDef))
+                            {
+                                cost_list[cost.thingDef] = 0;
+                            }
+                            cost_list[cost.thingDef] += cost.count;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Warning("" + e);
+                }
+            }
+            return cost_list;
+        }
+        private void AddItemsToTransferables()
+        {
+            var goods = CountAllBuildingCost();
+            foreach (var thing_def_count in goods)
+            {// multiplied by recyling rate
+                int stack_count = ((int)Math.Round(thing_def_count.Value * map_recycle_rate[salvage_map]));
+                if (stack_count > 0)
+                {
+                    Thing thing = ThingMaker.MakeThing(thing_def_count.Key);
+                    thing.stackCount = stack_count;
+                    var transferable_one_way = new TransferableOneWay();
+                    transferable_one_way.things.Add(thing);
+                    transferables.Add(transferable_one_way);
+                }
+            }
+        }
+        public override bool CausesMessageBackground()
+        {
+            return true;
+        }
+    }
+}
+
