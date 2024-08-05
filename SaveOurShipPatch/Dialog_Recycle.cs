@@ -19,8 +19,14 @@ namespace SaveOurShipPatch
         private readonly CompShipBaySalvageAdvanced parent_comp;
         private Map PlayerMap { get { return parent_comp.mapComp.map; } }
         private readonly Map salvage_map;
-        private static Dictionary<Map, double> map_recycle_rate = new Dictionary<Map, double>();
-        private int num_salvage_bays;
+        public static Dictionary<Map, float> map_recycle_rate = new Dictionary<Map, float>();
+        private int NumSalvageBays
+        {
+            get
+            {
+                return parent_comp.mapComp.Bays.Where(b => b is CompShipBaySalvage && b.parent.Faction == Faction.OfPlayer).Count();
+            }
+        }
         private List<TransferableOneWay> transferables;
         private TransferableOneWayWidget items_transfer;
         private float cachedMassUsage;
@@ -30,7 +36,7 @@ namespace SaveOurShipPatch
             get
             {
                 if (ModSettings_SaveOurShipPatch.limit_mass_per_bay)
-                    return num_salvage_bays * ModSettings_SaveOurShipPatch.mass_per_bay;
+                    return NumSalvageBays * ModSettings_SaveOurShipPatch.mass_per_bay;
                 else
                     return float.PositiveInfinity;
             }
@@ -83,12 +89,22 @@ namespace SaveOurShipPatch
         {
             this.parent_comp = parent_comp;
             this.salvage_map = salvage_map;
+            //Remove invalid map recycle rate in case the map was not recycled using this mod.
+            var map_keys = map_recycle_rate.Keys.ToList();
+            foreach (Map map in map_keys)
+            {
+                if (!Find.Maps.Contains(map))
+                {
+                    Log.Message($"invalid map recycle rate removed: {map_recycle_rate[map]}");
+                    map_recycle_rate.Remove(map);
+                }
+            }
+            //Add new map recycle rate
             if (!map_recycle_rate.ContainsKey(salvage_map))
             {
-                map_recycle_rate[salvage_map] = Rand.Range((float)ModSettings_SaveOurShipPatch.RecycleRateMin, (float)ModSettings_SaveOurShipPatch.RecycleRateMax);
-                Log.Message("map recycle rate added: " + salvage_map.Parent.Label + ": {0}".Formatted(map_recycle_rate[salvage_map]));
+                map_recycle_rate[salvage_map] = Rand.Range(ModSettings_SaveOurShipPatch.RecycleRateMin, ModSettings_SaveOurShipPatch.RecycleRateMax);
+                Log.Message($"map recycle rate (length: {map_recycle_rate.Count()}) added: {salvage_map.Parent.Label}: {map_recycle_rate[salvage_map]}");
             }
-            this.num_salvage_bays = parent_comp.mapComp.Bays.Where(b => b is CompShipBaySalvage && b.parent.Faction == Faction.OfPlayer).Count();
             forcePause = true;
             absorbInputAroundWindow = true;
         }
@@ -230,14 +246,22 @@ namespace SaveOurShipPatch
                         "DropPodReceivedText".Translate(drop_pod_received_text),
                         LetterDefOf.PositiveEvent, thing_list, null, null, null, null
                         );
-
-                //destroy all ships in that map
-                while (targetMapComp.ShipsOnMap.Count > 0)
+                List<int> shipStuck;
+                // if is player map, select salvage only
+                if (salvage_map == PlayerMap)
                 {
-                    var ship_index = targetMapComp.ShipsOnMap.Keys.First();
-                    ShipInteriorMod2.RemoveShipOrArea(salvage_map, ship_index);
+                    shipStuck = targetMapComp.ShipsOnMap.Keys.Where(s => targetMapComp.ShipsOnMap[s].IsStuckAndNotAssisted() && targetMapComp.ShipsOnMap[s].BuildingCount > 4).ToList();
                 }
-                Log.Message("map recycle rate removed: " + salvage_map.Parent.Label + ": {0}".Formatted(map_recycle_rate[salvage_map]));
+                else
+                {
+                    shipStuck = targetMapComp.ShipsOnMap.Keys.ToList();
+                }
+                //remove all salvages in that map
+                foreach (int ship_index in shipStuck)
+                {
+                    ShipInteriorMod2.RemoveShipOrArea(salvage_map, ship_index, null, salvage_map != PlayerMap, false);
+                }
+                Log.Message($"map recycle rate removed: {salvage_map.Parent.Label}: {map_recycle_rate[salvage_map]}");
                 map_recycle_rate.Remove(salvage_map);
             }
         }
@@ -269,9 +293,19 @@ namespace SaveOurShipPatch
         public Dictionary<ThingDef, int> CountAllBuildingCost()
         {
             ShipMapComp targetMapComp = salvage_map.GetComponent<ShipMapComp>();
-            //Count all buildings costs in enemy ship map
+            // if is player map, count building costs in salvage only
+            List<SpaceShipCache> ship_cache_list;
+            if (salvage_map == PlayerMap)
+            {
+                ship_cache_list = targetMapComp.ShipsOnMap.Values.Where(c => c.IsStuckAndNotAssisted() && c.BuildingCount > 4).ToList();
+            }
+            else
+            {
+                ship_cache_list = targetMapComp.ShipsOnMap.Values.ToList();
+            }
+            //Count all buildings costs in target ship map
             HashSet<IntVec3> area = new HashSet<IntVec3>();
-            foreach (var ship_cache in targetMapComp.ShipsOnMap.Values)
+            foreach (var ship_cache in ship_cache_list)
             {
                 area.AddRange(ship_cache.Area);
             }

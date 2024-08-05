@@ -3,7 +3,7 @@
     <RecycleShip>Recyle Ship {0} (Recycling Rate: {1})</RecycleShip>
     <SalvageDeconstructCommand>Recycle From {0}</SalvageDeconstructCommand>
     <SalvageDeconstructCommandDesc>Recycle all ship salvages in map {0}</SalvageDeconstructCommandDesc>
-    <SalvageDeconstructDisabled>Condition not suitable</SalvageDeconstructDisabled>
+    <SalvageDeconstructDisabled>Cannot recycle: In ship battle, or enemy pawns are present!</SalvageDeconstructDisabled>
     <SelectEverything>Select All</SelectEverything>
     <ConfirmRecycling>Confirm recycling? The remaining parts of the ship will be removed.</ConfirmRecycling>
     <DropPodReceivedLabel>Resources Received</DropPodReceivedLabel>
