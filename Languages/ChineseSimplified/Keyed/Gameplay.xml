@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+    <RecycleShip>回收飞船 {0} (回收率：{1})</RecycleShip>
+    <SalvageDeconstructCommand>回收 {0}</SalvageDeconstructCommand>
+    <SalvageDeconstructCommandDesc>回收 {0} 中的所有飞船残骸</SalvageDeconstructCommandDesc>
+    <SalvageDeconstructDisabled>非安全情况下无法进行回收！</SalvageDeconstructDisabled>
+    <SelectEverything>选择所有</SelectEverything>
+    <ConfirmRecycling>确认回收这些资源吗？剩余残骸将被移除。</ConfirmRecycling>
+    <DropPodReceivedLabel>空投物资抵达</DropPodReceivedLabel>
+    <DropPodReceivedText>从残骸中回收了以下资源：\n{0}</DropPodReceivedText>
+    <SaveOurShipPatch.Settings.RecycleRateMin>最小回收率 (最小值: {0}, 最大值: {1}, 默认值: {2}, 当前值: {3})</SaveOurShipPatch.Settings.RecycleRateMin>
+    <SaveOurShipPatch.Settings.RecycleRateMax>最大回收率 (最小值: {0}, 最大值: {1}, 默认值: {2}, 当前值: {3})</SaveOurShipPatch.Settings.RecycleRateMax>
+    <SaveOurShipPatch.Settings.RecycleRate.Desc>一般来说，拆除建筑时会丢失一些资源。类似的，该值为回收率的最小/最大值。</SaveOurShipPatch.Settings.RecycleRate.Desc>
+    <SaveOurShipPatch.Settings.LimitMassPerBay>限制每个回收港的最大回收量</SaveOurShipPatch.Settings.LimitMassPerBay>
+    <SaveOurShipPatch.Settings.LimitMassPerBay.Desc>如果选中，则最大回收重量是船上回收港的数量与“每个回收港最大回收量”的乘积。</SaveOurShipPatch.Settings.LimitMassPerBay.Desc>
+    <SaveOurShipPatch.Settings.MassPerBay>每个回收港最大回收量 (默认值: {0})</SaveOurShipPatch.Settings.MassPerBay>
+    <SaveOurShipPatch.Settings.EnergyPerKg>每千克消耗电量 (默认值: {0})</SaveOurShipPatch.Settings.EnergyPerKg>
+    <SaveOurShipPatch.Settings.EnergyPerKg.Desc>大于0时，回收时消耗电量。回收的越多，需要的电力储存就越大。</SaveOurShipPatch.Settings.EnergyPerKg.Desc>
+    <TooLargeEnergyUsage>电量不足以完成回收！</TooLargeEnergyUsage>
+    <!-- <SaveOurShipPatch.Settings.AutoCalculateTicks>Enable Auto Calculate Ticks</SaveOurShipPatch.Settings.AutoCalculateTicks>
+    <SaveOurShipPatch.Settings.AutoCalculateTicks.Desc>Automatically calculate ticks to complete recycling task based on resource amount. A larger ship should take longer. If checked, "Ticks to Complete Recycling" will be ignored.</SaveOurShipPatch.Settings.AutoCalculateTicks.Desc>
+    <SaveOurShipPatch.Settings.TicksCompleteRecycle>Ticks to Complete Recycling (default: {0})</SaveOurShipPatch.Settings.TicksCompleteRecycle>
+    <SaveOurShipPatch.Settings.TicksCompleteRecycle.Desc>It will take a certain time to complete the recycling if the value is greater than 0.</SaveOurShipPatch.Settings.TicksCompleteRecycle.Desc> -->
+    <SaveOurShipPatch.Settings.ModName>Save Our Ship 2 高级回收港</SaveOurShipPatch.Settings.ModName>
+    <SaveOurShipPatch.Settings.ResetSettingsLabel>重置</SaveOurShipPatch.Settings.ResetSettingsLabel>
+</LanguageData>

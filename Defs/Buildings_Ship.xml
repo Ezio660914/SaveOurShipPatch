@@ -47,6 +47,11 @@
                 <borderSize>1</borderSize>
                 <graphicPath>Things/Building/Ship/Salvage_Bay_Roof</graphicPath>
             </li>
+            <li Class="CompProperties_Power">
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>0</basePowerConsumption>
+				<transmitsPower>false</transmitsPower>
+			</li>
         </comps>
         <placeWorkers>
             <li>SaveOurShip2.PlaceWorker_ShipBay</li>

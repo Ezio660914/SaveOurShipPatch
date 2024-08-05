@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
-    <RecycleShip>Recyle Ship {0} (Recycle Rate: {1})</RecycleShip>
+    <RecycleShip>Recyle Ship {0} (Recycling Rate: {1})</RecycleShip>
     <SalvageDeconstructCommand>Recycle From {0}</SalvageDeconstructCommand>
     <SalvageDeconstructCommandDesc>Recycle all ship salvages in map {0}</SalvageDeconstructCommandDesc>
     <SalvageDeconstructDisabled>Condition not suitable</SalvageDeconstructDisabled>
     <SelectEverything>Select All</SelectEverything>
     <ConfirmRecycling>Confirm recycling? The remaining parts of the ship will be removed.</ConfirmRecycling>
     <DropPodReceivedLabel>Resources Received</DropPodReceivedLabel>
-    <DropPodReceivedText>Recycled resources from salvages.\n{0}</DropPodReceivedText>
-    <SaveOurShipPatch.Settings.RecycleRateMin>Min Percentage of Recycling (min: {0}, max: {1}, default: {2}, current: {3})</SaveOurShipPatch.Settings.RecycleRateMin>
-    <SaveOurShipPatch.Settings.RecycleRateMax>Max Percentage of Recycling (min: {0}, max: {1}, default: {2}, current: {3})</SaveOurShipPatch.Settings.RecycleRateMax>
+    <DropPodReceivedText>Recycled resources from salvages:\n{0}</DropPodReceivedText>
+    <SaveOurShipPatch.Settings.RecycleRateMin>Min Recycling Rate(min: {0}, max: {1}, default: {2}, current: {3})</SaveOurShipPatch.Settings.RecycleRateMin>
+    <SaveOurShipPatch.Settings.RecycleRateMax>Max Recycling Rate(min: {0}, max: {1}, default: {2}, current: {3})</SaveOurShipPatch.Settings.RecycleRateMax>
     <SaveOurShipPatch.Settings.RecycleRate.Desc>By default, some resources are lost in deconstruction. The value determines the minimum/maximum amount of resources recycled.</SaveOurShipPatch.Settings.RecycleRate.Desc>
     <SaveOurShipPatch.Settings.LimitMassPerBay>Enable Payload Limitation per Salvage Bay</SaveOurShipPatch.Settings.LimitMassPerBay>
     <SaveOurShipPatch.Settings.LimitMassPerBay.Desc>If checked, the maximum weight of recycling is the product of salvage bays count on board and "Salvage Bay Payload"</SaveOurShipPatch.Settings.LimitMassPerBay.Desc>
     <SaveOurShipPatch.Settings.MassPerBay>Salvage Bay Payload (default: {0})</SaveOurShipPatch.Settings.MassPerBay>
-    <SaveOurShipPatch.Settings.AutoCalculateTicks>Enable Auto Calculate Ticks</SaveOurShipPatch.Settings.AutoCalculateTicks>
+    <SaveOurShipPatch.Settings.EnergyPerKg>Energy Consumption per Kilogram (default: {0})</SaveOurShipPatch.Settings.EnergyPerKg>
+    <SaveOurShipPatch.Settings.EnergyPerKg.Desc>If greater than 0, consume energy when recycling. The more you wish to recycle, the greater the energy storage capacity you will need.</SaveOurShipPatch.Settings.EnergyPerKg.Desc>
+    <TooLargeEnergyUsage>Not enough energy to recycle.</TooLargeEnergyUsage>
+    <!-- <SaveOurShipPatch.Settings.AutoCalculateTicks>Enable Auto Calculate Ticks</SaveOurShipPatch.Settings.AutoCalculateTicks>
     <SaveOurShipPatch.Settings.AutoCalculateTicks.Desc>Automatically calculate ticks to complete recycling task based on resource amount. A larger ship should take longer. If checked, "Ticks to Complete Recycling" will be ignored.</SaveOurShipPatch.Settings.AutoCalculateTicks.Desc>
     <SaveOurShipPatch.Settings.TicksCompleteRecycle>Ticks to Complete Recycling (default: {0})</SaveOurShipPatch.Settings.TicksCompleteRecycle>
-    <SaveOurShipPatch.Settings.TicksCompleteRecycle.Desc>It will take a certain time to complete the recycling if the value is greater than 0.</SaveOurShipPatch.Settings.TicksCompleteRecycle.Desc>
+    <SaveOurShipPatch.Settings.TicksCompleteRecycle.Desc>It will take a certain time to complete the recycling if the value is greater than 0.</SaveOurShipPatch.Settings.TicksCompleteRecycle.Desc> -->
     <SaveOurShipPatch.Settings.ModName>Save Our Ship 2 Advanced Salvage Bay</SaveOurShipPatch.Settings.ModName>
     <SaveOurShipPatch.Settings.ResetSettingsLabel>Reset</SaveOurShipPatch.Settings.ResetSettingsLabel>
 </LanguageData>

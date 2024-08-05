@@ -25,7 +25,7 @@ namespace SaveOurShipPatch
                     continue;
                 if (targetMapComp.MapShipCells.Any())
                 {
-                    var deconstructShipEnemy = new Command_DeconstructShipEnemy(mapComp.map, map)
+                    var deconstructShipEnemy = new Command_DeconstructShipEnemy(this, map)
                     {
                         icon = ContentFinder<Texture2D>.Get("UI/SalvageDeconstruct"),
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("SalvageDeconstructCommand", map.Parent.Label),

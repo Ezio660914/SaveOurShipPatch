@@ -16,9 +16,10 @@ namespace SaveOurShipPatch
 
     public class Dialog_Recycle : Window
     {
-        private Map player_map;
-        private Map salvage_map;
-        public static Dictionary<Map, double> map_recycle_rate = new Dictionary<Map, double>();
+        private readonly CompShipBaySalvageAdvanced parent_comp;
+        private Map PlayerMap { get { return parent_comp.mapComp.map; } }
+        private readonly Map salvage_map;
+        private static Dictionary<Map, double> map_recycle_rate = new Dictionary<Map, double>();
         private int num_salvage_bays;
         private List<TransferableOneWay> transferables;
         private TransferableOneWayWidget items_transfer;
@@ -47,7 +48,29 @@ namespace SaveOurShipPatch
                 return cachedMassUsage;
             }
         }
-        private static readonly List<Pair<float, Color>> MassColor = new List<Pair<float, Color>>
+
+        private float EnergyUsage
+        {
+            get
+            {
+                return MassUsage * ModSettings_SaveOurShipPatch.energy_per_kg;
+            }
+        }
+        private PowerNet PowerNet
+        {
+            get
+            {
+                return parent_comp.parent.TryGetComp<CompPowerTrader>().PowerNet;
+            }
+        }
+        private float CurrentStoredEnergy
+        {
+            get
+            {
+                return this.PowerNet.CurrentStoredEnergy();
+            }
+        }
+        private static readonly List<Pair<float, Color>> ColorGrad = new List<Pair<float, Color>>
         {
             new Pair<float, Color>(0.37f, Color.green),
             new Pair<float, Color>(0.82f, Color.yellow),
@@ -56,16 +79,16 @@ namespace SaveOurShipPatch
         private readonly Vector2 BottomButtonSize = new Vector2(160f, 40f);
         public override Vector2 InitialSize => new Vector2(1024f, UI.screenHeight);
         protected override float Margin => 0f;
-        public Dialog_Recycle(Map player_map, Map salvage_map)
+        public Dialog_Recycle(CompShipBaySalvageAdvanced parent_comp, Map salvage_map)
         {
-            this.player_map = player_map;
+            this.parent_comp = parent_comp;
             this.salvage_map = salvage_map;
             if (!map_recycle_rate.ContainsKey(salvage_map))
             {
                 map_recycle_rate[salvage_map] = Rand.Range((float)ModSettings_SaveOurShipPatch.RecycleRateMin, (float)ModSettings_SaveOurShipPatch.RecycleRateMax);
                 Log.Message("map recycle rate added: " + salvage_map.Parent.Label + ": {0}".Formatted(map_recycle_rate[salvage_map]));
             }
-            this.num_salvage_bays = player_map.GetComponent<ShipMapComp>().Bays.Where(b => b is CompShipBaySalvage && b.parent.Faction == Faction.OfPlayer).Count();
+            this.num_salvage_bays = parent_comp.mapComp.Bays.Where(b => b is CompShipBaySalvage && b.parent.Faction == Faction.OfPlayer).Count();
             forcePause = true;
             absorbInputAroundWindow = true;
         }
@@ -74,19 +97,19 @@ namespace SaveOurShipPatch
             base.PostOpen();
             CalculateAndRecacheTransferables();
         }
-        private static Color GetMassColor(float massUsage, float massCapacity, bool lerpMassColor)
+        private static Color GetColor(float usage, float capacity, bool lerpColor)
         {
-            if (massCapacity == float.PositiveInfinity)
+            if (capacity == float.PositiveInfinity)
             {
                 return Color.white;
             }
-            if (massUsage > massCapacity)
+            if (usage > capacity)
             {
                 return Color.red;
             }
-            if (lerpMassColor)
+            if (lerpColor)
             {
-                return GenUI.LerpColor(MassColor, massUsage / massCapacity);
+                return GenUI.LerpColor(ColorGrad, usage / capacity);
             }
             return Color.white;
         }
@@ -98,10 +121,12 @@ namespace SaveOurShipPatch
             Widgets.Label(rect, "RecycleShip".Translate(salvage_map.Parent.Label, map_recycle_rate[salvage_map].ToString("P0")));
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperLeft;
-            Rect rect2 = new Rect(12f, 35f, inRect.width / 4f, 40f);
+            Rect rect2 = new Rect(12f, 35f, inRect.width / 3f, 40f);
             List<TransferableUIUtility.ExtraInfo> tmp_info = new List<TransferableUIUtility.ExtraInfo>();
             TaggedString tagged_string = MassUsage.ToString() + " / " + MassCapacity.ToString("F0") + " " + "kg".Translate();
-            tmp_info.Add(new TransferableUIUtility.ExtraInfo("Mass".Translate(), tagged_string, GetMassColor(MassUsage, MassCapacity, true), ""));
+            tmp_info.Add(new TransferableUIUtility.ExtraInfo("Mass".Translate(), tagged_string, GetColor(MassUsage, MassCapacity, true), ""));
+            TaggedString tagged_string2 = EnergyUsage.ToString() + " / " + CurrentStoredEnergy.ToString("F0") + " " + "Wd";
+            tmp_info.Add(new TransferableUIUtility.ExtraInfo("Power".Translate(), tagged_string2, GetColor(EnergyUsage, CurrentStoredEnergy, true), ""));
             TransferableUIUtility.DrawExtraInfo(tmp_info, rect2);
             inRect.yMin += 119f;
             inRect = inRect.ContractedBy(17f);
@@ -129,6 +154,7 @@ namespace SaveOurShipPatch
                     {
                         Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ConfirmRecycling".Translate(), delegate
                         {
+                            ConsumeEnergy();
                             SendDropPodsAndRemoveShips();
                             SoundDefOf.Tick_High.PlayOneShotOnCamera();
                             Close(doCloseSound: false);
@@ -159,7 +185,25 @@ namespace SaveOurShipPatch
                 Messages.Message("TooBigTransportersMassUsage".Translate(), MessageTypeDefOf.RejectInput, historical: false);
                 return false;
             }
+            else if (EnergyUsage > CurrentStoredEnergy)
+            {
+                Messages.Message("TooLargeEnergyUsage".Translate(), MessageTypeDefOf.RejectInput, historical: false);
+                return false;
+            }
             return true;
+        }
+        private void ConsumeEnergy()
+        {
+            //draw the same percentage from each cap: needed*current/currenttotal
+            float current_stored_energy = CurrentStoredEnergy;
+            Log.Message($"current stored energy: {current_stored_energy}");
+            foreach (CompPowerBattery bat in this.PowerNet.batteryComps)
+            {
+                float amount = Mathf.Min(EnergyUsage * bat.StoredEnergy / current_stored_energy, bat.StoredEnergy);
+                Log.Message($"total energy usage: {EnergyUsage}, each battery consume amount: {amount}");
+                bat.DrawPower(amount);
+            }
+            Log.Message($"remaining stored energy: {CurrentStoredEnergy}");
         }
         private void SendDropPodsAndRemoveShips()
         {
@@ -174,7 +218,7 @@ namespace SaveOurShipPatch
                 thing.stackCount = tr.CountToTransfer;
                 if (thing.stackCount > 0)
                 {
-                    TradeUtility.SpawnDropPod(DropCellFinder.TradeDropSpot(player_map), player_map, thing);
+                    TradeUtility.SpawnDropPod(DropCellFinder.TradeDropSpot(PlayerMap), PlayerMap, thing);
                     drop_pod_received_text += thing.def.label + ": " + thing.stackCount.ToString() + "\n";
                     thing_list.Add(thing);
                 }
@@ -197,6 +241,8 @@ namespace SaveOurShipPatch
                 map_recycle_rate.Remove(salvage_map);
             }
         }
+
+
         private void SetToLoadEverything()
         {
             for (int i = 0; i < transferables.Count; i++)
@@ -209,7 +255,15 @@ namespace SaveOurShipPatch
         {
             transferables = new List<TransferableOneWay>();
             AddItemsToTransferables();
-            items_transfer = new TransferableOneWayWidget(transferables, null, null, "FormCaravanColonyThingCountTip".Translate(), drawMass: true, IgnorePawnsInventoryMode.Ignore, availableMassGetter: () => MassCapacity - MassUsage, drawMarketValue: true);
+            items_transfer = new TransferableOneWayWidget(transferables, null, null, "FormCaravanColonyThingCountTip".Translate(), drawMass: true, IgnorePawnsInventoryMode.Ignore,
+                availableMassGetter: delegate
+                {
+                    if (ModSettings_SaveOurShipPatch.energy_per_kg > 0)
+                        return Math.Min(MassCapacity - MassUsage, (CurrentStoredEnergy - EnergyUsage) / ModSettings_SaveOurShipPatch.energy_per_kg);
+                    else
+                        return MassCapacity - MassUsage;
+                },
+                drawMarketValue: true);
             CountToTransferChanged = true;
         }
         public Dictionary<ThingDef, int> CountAllBuildingCost()
