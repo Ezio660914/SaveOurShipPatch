@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
     <RecycleShip>Recyle Ship {0} (Recycling Rate: {1})</RecycleShip>
+    <ScoopDebris>Scoop Debris From {0}</ScoopDebris>
     <SalvageDeconstructCommand>Recycle From {0}</SalvageDeconstructCommand>
     <SalvageDeconstructCommandDesc>Recycle all ship salvages in map {0}</SalvageDeconstructCommandDesc>
     <SalvageDeconstructDisabled>Cannot recycle: In ship battle, or enemy pawns are present!</SalvageDeconstructDisabled>
+    <ScoopDebrisCommand>Scoop From {0}</ScoopDebrisCommand>
+    <ScoopDebrisCommandDesc>Scoop debris in map {0}</ScoopDebrisCommandDesc>
     <SelectEverything>Select All</SelectEverything>
     <ConfirmRecycling>Confirm recycling? The remaining parts of the ship will be removed.</ConfirmRecycling>
+    <ConfirmScoop>Confirm scooping selected debris?</ConfirmScoop>
     <DropPodReceivedLabel>Resources Received</DropPodReceivedLabel>
     <DropPodReceivedText>Recycled resources from salvages:\n{0}</DropPodReceivedText>
     <SaveOurShipPatch.Settings.RecycleRateMin>Min Recycling Rate(min: {0}, max: {1}, default: {2}, current: {3})</SaveOurShipPatch.Settings.RecycleRateMin>

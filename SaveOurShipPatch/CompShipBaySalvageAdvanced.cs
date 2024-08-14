@@ -74,6 +74,23 @@ namespace SaveOurShipPatch
                     }
                     yield return deconstructShipEnemy;
                 }
+
+                // advanced glittertech salvage bay
+                if (Props.beam && (parent.TryGetComp<CompPowerTrader>()?.PowerOn ?? false))
+                {
+                    var scoop_debris = new Command_Action
+                    {
+                        action = () => Find.WindowStack.Add(new Dialog_Scoop(this, map)),
+                        icon = ContentFinder<Texture2D>.Get("UI/ScoopDebris"),
+                        defaultLabel = TranslatorFormattedStringExtensions.Translate("ScoopDebrisCommand", map.Parent.Label),
+                        defaultDesc = TranslatorFormattedStringExtensions.Translate("ScoopDebrisCommandDesc", map.Parent.Label),
+                    };
+                    if (!nominal)
+                    {
+                        scoop_debris.Disable(TranslatorFormattedStringExtensions.Translate("SalvageDeconstructDisabled"));
+                    }
+                    yield return scoop_debris;
+                }
             }
 
 

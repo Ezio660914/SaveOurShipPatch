@@ -16,22 +16,22 @@ namespace SaveOurShipPatch
 
     public class Dialog_Recycle : Window
     {
-        private readonly CompShipBaySalvageAdvanced parent_comp;
-        private Map PlayerMap { get { return parent_comp.mapComp.map; } }
-        private readonly Map salvage_map;
+        protected readonly CompShipBaySalvageAdvanced parent_comp;
+        protected Map PlayerMap { get { return parent_comp.mapComp.map; } }
+        protected readonly Map salvage_map;
         public static Dictionary<Map, float> map_recycle_rate = new Dictionary<Map, float>();
-        private int NumSalvageBays
+        protected int NumSalvageBays
         {
             get
             {
                 return parent_comp.mapComp.Bays.Where(b => b is CompShipBaySalvage && b.parent.Faction == Faction.OfPlayer).Count();
             }
         }
-        private List<TransferableOneWay> transferables;
-        private TransferableOneWayWidget items_transfer;
-        private float cachedMassUsage;
-        private bool CountToTransferChanged { get; set; }
-        private float MassCapacity
+        protected List<TransferableOneWay> transferables;
+        protected TransferableOneWayWidget items_transfer;
+        protected float cachedMassUsage;
+        protected bool CountToTransferChanged { get; set; }
+        protected float MassCapacity
         {
             get
             {
@@ -42,7 +42,7 @@ namespace SaveOurShipPatch
             }
         }
 
-        private float MassUsage
+        protected float MassUsage
         {
             get
             {
@@ -55,34 +55,34 @@ namespace SaveOurShipPatch
             }
         }
 
-        private float EnergyUsage
+        protected float EnergyUsage
         {
             get
             {
                 return MassUsage * ModSettings_SaveOurShipPatch.energy_per_kg;
             }
         }
-        private PowerNet PowerNet
+        protected PowerNet PowerNet
         {
             get
             {
                 return parent_comp.parent.TryGetComp<CompPowerTrader>().PowerNet;
             }
         }
-        private float CurrentStoredEnergy
+        protected float CurrentStoredEnergy
         {
             get
             {
                 return this.PowerNet.CurrentStoredEnergy();
             }
         }
-        private static readonly List<Pair<float, Color>> ColorGrad = new List<Pair<float, Color>>
+        protected static readonly List<Pair<float, Color>> ColorGrad = new List<Pair<float, Color>>
         {
             new Pair<float, Color>(0.37f, Color.green),
             new Pair<float, Color>(0.82f, Color.yellow),
             new Pair<float, Color>(1f, new Color(1f, 0.6f, 0f))
         };
-        private readonly Vector2 BottomButtonSize = new Vector2(160f, 40f);
+        protected readonly Vector2 BottomButtonSize = new Vector2(160f, 40f);
         public override Vector2 InitialSize => new Vector2(1024f, UI.screenHeight);
         protected override float Margin => 0f;
         public Dialog_Recycle(CompShipBaySalvageAdvanced parent_comp, Map salvage_map)
@@ -113,7 +113,7 @@ namespace SaveOurShipPatch
             base.PostOpen();
             CalculateAndRecacheTransferables();
         }
-        private static Color GetColor(float usage, float capacity, bool lerpColor)
+        protected static Color GetColor(float usage, float capacity, bool lerpColor)
         {
             if (capacity == float.PositiveInfinity)
             {
@@ -159,7 +159,7 @@ namespace SaveOurShipPatch
             }
             GUI.EndGroup();
         }
-        private void DoBottomButtons(Rect rect)
+        protected virtual void DoBottomButtons(Rect rect)
         {
             Rect rect2 = new Rect(rect.width / 2f - BottomButtonSize.x / 2f, rect.height - 55f, BottomButtonSize.x, BottomButtonSize.y);
             if (Widgets.ButtonText(rect2, "AcceptButton".Translate()))
@@ -171,7 +171,7 @@ namespace SaveOurShipPatch
                         Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("ConfirmRecycling".Translate(), delegate
                         {
                             ConsumeEnergy();
-                            SendDropPodsAndRemoveShips();
+                            SendTransferablesAndRemoveSalvages();
                             SoundDefOf.Tick_High.PlayOneShotOnCamera();
                             Close(doCloseSound: false);
                         }));
@@ -194,7 +194,7 @@ namespace SaveOurShipPatch
                 SetToLoadEverything();
             }
         }
-        private bool TryAccept()
+        protected bool TryAccept()
         {
             if (MassUsage > MassCapacity)
             {
@@ -208,7 +208,7 @@ namespace SaveOurShipPatch
             }
             return true;
         }
-        private void ConsumeEnergy()
+        protected void ConsumeEnergy()
         {
             //draw the same percentage from each cap: needed*current/currenttotal
             float current_stored_energy = CurrentStoredEnergy;
@@ -221,7 +221,7 @@ namespace SaveOurShipPatch
             }
             Log.Message($"remaining stored energy: {CurrentStoredEnergy}");
         }
-        private void SendDropPodsAndRemoveShips()
+        protected virtual void SendTransferablesAndRemoveSalvages()
         {
             ShipMapComp targetMapComp = salvage_map.GetComponent<ShipMapComp>();
             //send all resources to player's map using pod
@@ -267,7 +267,7 @@ namespace SaveOurShipPatch
         }
 
 
-        private void SetToLoadEverything()
+        protected void SetToLoadEverything()
         {
             for (int i = 0; i < transferables.Count; i++)
             {
@@ -275,7 +275,7 @@ namespace SaveOurShipPatch
             }
             CountToTransferChanged = true;
         }
-        private void CalculateAndRecacheTransferables()
+        protected void CalculateAndRecacheTransferables()
         {
             transferables = new List<TransferableOneWay>();
             AddItemsToTransferables();
@@ -290,7 +290,7 @@ namespace SaveOurShipPatch
                 drawMarketValue: true);
             CountToTransferChanged = true;
         }
-        public Dictionary<ThingDef, int> CountAllBuildingCost()
+        protected Dictionary<ThingDef, int> CountAllBuildingCost()
         {
             ShipMapComp targetMapComp = salvage_map.GetComponent<ShipMapComp>();
             // if is player map, count building costs in salvage only
@@ -344,10 +344,10 @@ namespace SaveOurShipPatch
             }
             return cost_list;
         }
-        private void AddItemsToTransferables()
+        protected virtual void AddItemsToTransferables()
         {
-            var goods = CountAllBuildingCost();
-            foreach (var thing_def_count in goods)
+            var building_cost = CountAllBuildingCost();
+            foreach (var thing_def_count in building_cost)
             {// multiplied by recyling rate
                 int stack_count = ((int)Math.Round(thing_def_count.Value * map_recycle_rate[salvage_map]));
                 if (stack_count > 0)

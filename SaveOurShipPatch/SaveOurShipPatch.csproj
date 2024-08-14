@@ -34,6 +34,7 @@
   <ItemGroup>
     <Compile Include="CompShipBaySalvageAdvanced.cs" />
     <Compile Include="Dialog_Recycle.cs" />
+    <Compile Include="Dialog_Scoop.cs" />
     <Compile Include="ModUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

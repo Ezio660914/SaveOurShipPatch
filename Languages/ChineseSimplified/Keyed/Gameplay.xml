@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
     <RecycleShip>回收飞船 {0} (回收率：{1})</RecycleShip>
+    <ScoopDebris>从 {0} 收集物资</ScoopDebris>
     <SalvageDeconstructCommand>回收 {0}</SalvageDeconstructCommand>
     <SalvageDeconstructCommandDesc>回收 {0} 中的所有飞船残骸</SalvageDeconstructCommandDesc>
     <SalvageDeconstructDisabled>非安全情况下无法进行回收！</SalvageDeconstructDisabled>
+    <ScoopDebrisCommand>收集 {0}</ScoopDebrisCommand>
+    <ScoopDebrisCommandDesc>收集 {0} 中地面散落的物资</ScoopDebrisCommandDesc>
     <SelectEverything>选择所有</SelectEverything>
     <ConfirmRecycling>确认回收这些资源吗？剩余残骸将被移除。</ConfirmRecycling>
+    <ConfirmScoop>确认收集所选的物资吗？</ConfirmScoop>
     <DropPodReceivedLabel>空投物资抵达</DropPodReceivedLabel>
     <DropPodReceivedText>从残骸中回收了以下资源：\n{0}</DropPodReceivedText>
     <SaveOurShipPatch.Settings.RecycleRateMin>最小回收率 (最小值: {0}, 最大值: {1}, 默认值: {2}, 当前值: {3})</SaveOurShipPatch.Settings.RecycleRateMin>
