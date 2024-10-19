@@ -10,12 +10,32 @@ namespace SaveOurShipPatch
 {
     public class CompShipBaySalvageAdvanced : CompShipBaySalvage
     {
+        //指定空投的位置
+        public static Building drop_pod_target = null;
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
             foreach (Gizmo item in base.CompGetGizmosExtra())
             {
                 yield return item;
             }
+            Command_Toggle command_isDropPodPos = new Command_Toggle();
+            command_isDropPodPos.icon = ContentFinder<Texture2D>.Get("Things/Special/DropPod");
+            command_isDropPodPos.defaultLabel = "DropPoint".Translate();
+            command_isDropPodPos.defaultDesc = "DropPointDesc".Translate();
+            command_isDropPodPos.isActive = (() => parent == drop_pod_target);
+            command_isDropPodPos.toggleAction = delegate
+            {
+                if (parent != drop_pod_target)
+                {
+                    drop_pod_target = parent as Building;
+                }
+                else
+                {
+                    drop_pod_target = null;
+                }
+            };
+            yield return command_isDropPodPos;
+
             bool nominal = mapComp.ShipMapState == ShipMapState.nominal;
             //player ship map
             if (mapComp.ShipsOnMap.Count > 1)

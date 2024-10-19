@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+    <ShipSalvageBayAdvanced.label>高级回收港</ShipSalvageBayAdvanced.label>
+    <ShipSalvageBayAdvanced.description>将残骸上的建筑转化为对应资源</ShipSalvageBayAdvanced.description>
+    
+    <ShipSalvageBayNanoAdvanced.label>高级闪耀科技回收港</ShipSalvageBayNanoAdvanced.label>
+    <ShipSalvageBayNanoAdvanced.description>将残骸上的建筑转化为对应资源，还能拾取地面散落的物资</ShipSalvageBayNanoAdvanced.description>
+</LanguageData>

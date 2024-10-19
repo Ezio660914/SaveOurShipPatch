@@ -234,7 +234,8 @@ namespace SaveOurShipPatch
                 thing.stackCount = tr.CountToTransfer;
                 if (thing.stackCount > 0)
                 {
-                    TradeUtility.SpawnDropPod(DropCellFinder.TradeDropSpot(PlayerMap), PlayerMap, thing);
+                    var drop_point = CompShipBaySalvageAdvanced.drop_pod_target == null ? DropCellFinder.TradeDropSpot(PlayerMap) : CompShipBaySalvageAdvanced.drop_pod_target.Position;
+                    TradeUtility.SpawnDropPod(drop_point, PlayerMap, thing);
                     drop_pod_received_text += thing.def.label + ": " + thing.stackCount.ToString() + "\n";
                     thing_list.Add(thing);
                 }

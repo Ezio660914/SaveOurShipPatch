@@ -27,4 +27,6 @@
     <SaveOurShipPatch.Settings.TicksCompleteRecycle.Desc>It will take a certain time to complete the recycling if the value is greater than 0.</SaveOurShipPatch.Settings.TicksCompleteRecycle.Desc> -->
     <SaveOurShipPatch.Settings.ModName>Save Our Ship 2 高级回收港</SaveOurShipPatch.Settings.ModName>
     <SaveOurShipPatch.Settings.ResetSettingsLabel>重置</SaveOurShipPatch.Settings.ResetSettingsLabel>
+    <DropPoint>空投点</DropPoint>
+    <DropPointDesc>若开启，将回收到此处</DropPointDesc>
 </LanguageData>

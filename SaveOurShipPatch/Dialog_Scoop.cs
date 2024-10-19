@@ -62,7 +62,8 @@ namespace SaveOurShipPatch
                 innerContainer = thing_owner,
                 leaveSlag = false
             };
-            DropPodUtility.MakeDropPodAt(DropCellFinder.TradeDropSpot(PlayerMap), PlayerMap, activeDropPodInfo);
+            var drop_point = CompShipBaySalvageAdvanced.drop_pod_target == null ? DropCellFinder.TradeDropSpot(PlayerMap) : CompShipBaySalvageAdvanced.drop_pod_target.Position;
+            DropPodUtility.MakeDropPodAt(drop_point, PlayerMap, activeDropPodInfo);
             if (thing_owner.Any)
             {
                 string drop_pod_received_text = "";

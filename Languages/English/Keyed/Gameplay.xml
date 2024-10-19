@@ -27,4 +27,6 @@
     <SaveOurShipPatch.Settings.TicksCompleteRecycle.Desc>It will take a certain time to complete the recycling if the value is greater than 0.</SaveOurShipPatch.Settings.TicksCompleteRecycle.Desc> -->
     <SaveOurShipPatch.Settings.ModName>Save Our Ship 2 Advanced Salvage Bay</SaveOurShipPatch.Settings.ModName>
     <SaveOurShipPatch.Settings.ResetSettingsLabel>Reset</SaveOurShipPatch.Settings.ResetSettingsLabel>
+    <DropPoint>Drop Point</DropPoint>
+    <DropPointDesc>If toggle on, drop pods land here.</DropPointDesc>
 </LanguageData>
