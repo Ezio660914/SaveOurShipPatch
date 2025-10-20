@@ -5,6 +5,7 @@
     <packageId>Fang.SaveOurShip2AdvancedSalvageBay</packageId>
     <description>No more manual deconstruction!\n\nFeatures: This mod adds an advanced salvage bay that directly converts ship wreckage into resources. By clicking the "recycle" button after ship battle, drop pods containing resources equivalent to the cost of all buildings on enemy ships will be sent to your ship. At the same time, the enemy ships are removed. \n\nWARNING: This is my first practice of making mod. Just for fun. Currently it is likely to break the balance of the game.\n\nSOS2高级回收港（Advanced Salvage Bay）：舰船战结束后飞船残骸一键转化为对应资源</description>
     <supportedVersions>
+        <li>1.5</li>
         <li>1.6</li>
     </supportedVersions>
     <modDependencies>
