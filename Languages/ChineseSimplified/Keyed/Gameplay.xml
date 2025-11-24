@@ -4,11 +4,11 @@
     <ScoopDebris>从 {0} 收集物资</ScoopDebris>
     <SalvageDeconstructCommand>回收 {0}</SalvageDeconstructCommand>
     <SalvageDeconstructCommandDesc>回收 {0} 中的所有飞船残骸</SalvageDeconstructCommandDesc>
-    <SalvageDeconstructDisabled>非安全情况下无法进行回收！</SalvageDeconstructDisabled>
+    <SalvageDeconstructDisabled>无法进行回收：飞船对战中，或地图上存在敌对目标！</SalvageDeconstructDisabled>
     <ScoopDebrisCommand>收集 {0}</ScoopDebrisCommand>
     <ScoopDebrisCommandDesc>收集 {0} 中地面散落的物资</ScoopDebrisCommandDesc>
     <SelectEverything>选择所有</SelectEverything>
-    <ConfirmRecycling>确认回收这些资源吗？剩余残骸将被移除。</ConfirmRecycling>
+    <ConfirmRecycling>确认回收这些资源吗？剩余残骸将被移除，飞船残骸上的所有殖民者将被击杀。</ConfirmRecycling>
     <ConfirmScoop>确认收集所选的物资吗？</ConfirmScoop>
     <DropPodReceivedLabel>空投物资抵达</DropPodReceivedLabel>
     <DropPodReceivedText>从残骸中回收了以下资源：\n{0}</DropPodReceivedText>
@@ -20,6 +20,8 @@
     <SaveOurShipPatch.Settings.MassPerBay>每个回收港最大回收量 (默认值: {0})</SaveOurShipPatch.Settings.MassPerBay>
     <SaveOurShipPatch.Settings.EnergyPerKg>每千克消耗电量 (默认值: {0})</SaveOurShipPatch.Settings.EnergyPerKg>
     <SaveOurShipPatch.Settings.EnergyPerKg.Desc>大于0时，回收时消耗电量。回收的越多，需要的电力储存就越大。</SaveOurShipPatch.Settings.EnergyPerKg.Desc>
+    <SaveOurShipPatch.Settings.AllowRecycleWithHostiles>有敌对目标时允许回收</SaveOurShipPatch.Settings.AllowRecycleWithHostiles>
+    <SaveOurShipPatch.Settings.AllowRecycleWithHostiles.Desc>如果选中，则允许在有敌对目标的情况下回收。</SaveOurShipPatch.Settings.AllowRecycleWithHostiles.Desc>
     <TooLargeEnergyUsage>电量不足以完成回收！</TooLargeEnergyUsage>
     <!-- <SaveOurShipPatch.Settings.AutoCalculateTicks>Enable Auto Calculate Ticks</SaveOurShipPatch.Settings.AutoCalculateTicks>
     <SaveOurShipPatch.Settings.AutoCalculateTicks.Desc>Automatically calculate ticks to complete recycling task based on resource amount. A larger ship should take longer. If checked, "Ticks to Complete Recycling" will be ignored.</SaveOurShipPatch.Settings.AutoCalculateTicks.Desc>
