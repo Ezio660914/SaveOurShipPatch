@@ -24,6 +24,7 @@ namespace SaveOurShipPatch
         public static int mass_per_bay = 1000;
 
         public static float energy_per_kg = 20f;
+        public static bool allow_recycle_with_hostiles = false;
 
         //public static bool auto_calculate_ticks = false;
         //public static int ticks_complete_recycle = 0;
@@ -34,6 +35,7 @@ namespace SaveOurShipPatch
             limit_mass_per_bay = true;
             mass_per_bay = 1000;
             energy_per_kg = 20f;
+            allow_recycle_with_hostiles = false;
             //auto_calculate_ticks = false;
             //ticks_complete_recycle = 0;
         }
@@ -44,6 +46,7 @@ namespace SaveOurShipPatch
             Scribe_Values.Look(ref limit_mass_per_bay, "limit_mass_per_bay", true);
             Scribe_Values.Look(ref mass_per_bay, "mass_per_bay", 1000);
             Scribe_Values.Look(ref energy_per_kg, "energy_per_kg", 20f);
+            Scribe_Values.Look(ref allow_recycle_with_hostiles, "allow_recycle_with_hostiles", false);
             //Scribe_Values.Look(ref auto_calculate_ticks, "auto_calculate_ticks", false);
             //Scribe_Values.Look(ref ticks_complete_recycle, "ticks_complete_recycle", 0);
             base.ExposeData();
@@ -82,6 +85,10 @@ namespace SaveOurShipPatch
             var energy_per_kg_str = energy_per_kg.ToString();
             options.TextFieldNumeric(ref energy_per_kg, ref energy_per_kg_str, 0, float.MaxValue);
 
+            options.Gap();
+            options.Gap();
+
+            options.CheckboxLabeled("SaveOurShipPatch.Settings.AllowRecycleWithHostiles".Translate(), ref allow_recycle_with_hostiles, "SaveOurShipPatch.Settings.AllowRecycleWithHostiles.Desc".Translate());
             //options.CheckboxLabeled("SaveOurShipPatch.Settings.AutoCalculateTicks".Translate(), ref auto_calculate_ticks, "SaveOurShipPatch.Settings.AutoCalculateTicks.Desc".Translate());
 
             //options.Label("SaveOurShipPatch.Settings.TicksCompleteRecycle".Translate("0"), tooltip: "SaveOurShipPatch.Settings.TicksCompleteRecycle.Desc".Translate());

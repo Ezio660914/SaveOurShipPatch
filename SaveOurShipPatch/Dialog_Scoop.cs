@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Verse;
-using Verse.Noise;
 using Verse.Sound;
 
 namespace SaveOurShipPatch
@@ -57,7 +56,7 @@ namespace SaveOurShipPatch
                     }
                 });
             }
-            ActiveDropPodInfo activeDropPodInfo = new ActiveDropPodInfo
+            ActiveTransporterInfo activeDropPodInfo = new ActiveTransporterInfo
             {
                 innerContainer = thing_owner,
                 leaveSlag = false

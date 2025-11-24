@@ -8,7 +8,7 @@
     <ScoopDebrisCommand>Scoop From {0}</ScoopDebrisCommand>
     <ScoopDebrisCommandDesc>Scoop debris in map {0}</ScoopDebrisCommandDesc>
     <SelectEverything>Select All</SelectEverything>
-    <ConfirmRecycling>Confirm recycling? The remaining parts of the ship will be removed.</ConfirmRecycling>
+    <ConfirmRecycling>Confirm recycling? The remaining parts of the ship will be removed. All pawns onboard will be killed.</ConfirmRecycling>
     <ConfirmScoop>Confirm scooping selected debris?</ConfirmScoop>
     <DropPodReceivedLabel>Resources Received</DropPodReceivedLabel>
     <DropPodReceivedText>Recycled resources from salvages:\n{0}</DropPodReceivedText>
@@ -20,7 +20,9 @@
     <SaveOurShipPatch.Settings.MassPerBay>Salvage Bay Payload (default: {0})</SaveOurShipPatch.Settings.MassPerBay>
     <SaveOurShipPatch.Settings.EnergyPerKg>Energy Consumption per Kilogram (default: {0})</SaveOurShipPatch.Settings.EnergyPerKg>
     <SaveOurShipPatch.Settings.EnergyPerKg.Desc>If greater than 0, consume energy when recycling. The more you wish to recycle, the greater the energy storage capacity you will need.</SaveOurShipPatch.Settings.EnergyPerKg.Desc>
-    <TooLargeEnergyUsage>Not enough energy to recycle.</TooLargeEnergyUsage>
+    <SaveOurShipPatch.Settings.AllowRecycleWithHostiles>Allow Recycle with Hostiles</SaveOurShipPatch.Settings.AllowRecycleWithHostiles>
+    <SaveOurShipPatch.Settings.AllowRecycleWithHostiles.Desc>If checked, allow recycling when there are hostile pawns present.</SaveOurShipPatch.Settings.AllowRecycleWithHostiles.Desc>
+<TooLargeEnergyUsage>Not enough energy to recycle.</TooLargeEnergyUsage>
     <!-- <SaveOurShipPatch.Settings.AutoCalculateTicks>Enable Auto Calculate Ticks</SaveOurShipPatch.Settings.AutoCalculateTicks>
     <SaveOurShipPatch.Settings.AutoCalculateTicks.Desc>Automatically calculate ticks to complete recycling task based on resource amount. A larger ship should take longer. If checked, "Ticks to Complete Recycling" will be ignored.</SaveOurShipPatch.Settings.AutoCalculateTicks.Desc>
     <SaveOurShipPatch.Settings.TicksCompleteRecycle>Ticks to Complete Recycling (default: {0})</SaveOurShipPatch.Settings.TicksCompleteRecycle>

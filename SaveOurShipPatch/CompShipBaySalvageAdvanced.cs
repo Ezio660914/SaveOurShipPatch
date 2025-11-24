@@ -4,7 +4,6 @@ using SaveOurShip2;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Verse.Noise;
 
 namespace SaveOurShipPatch
 {
@@ -49,7 +48,8 @@ namespace SaveOurShipPatch
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("SalvageDeconstructCommand", mapComp.map.Parent.Label),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("SalvageDeconstructCommandDesc", mapComp.map.Parent.Label),
                     };
-                    if (!nominal || !mapComp.CanClaimNow(Faction.OfPlayer))
+                    if (!nominal || !mapComp.CanClaimNow(Faction.OfPlayer) ||
+                        (!ModSettings_SaveOurShipPatch.allow_recycle_with_hostiles && GenHostility.AnyHostileActiveThreatToPlayer(mapComp.map, true)))
                     {
                         deconstructShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("SalvageDeconstructDisabled"));
                     }
@@ -88,7 +88,8 @@ namespace SaveOurShipPatch
                         defaultLabel = TranslatorFormattedStringExtensions.Translate("SalvageDeconstructCommand", map.Parent.Label),
                         defaultDesc = TranslatorFormattedStringExtensions.Translate("SalvageDeconstructCommandDesc", map.Parent.Label),
                     };
-                    if (!nominal)
+                    if (!nominal ||
+                        (!ModSettings_SaveOurShipPatch.allow_recycle_with_hostiles && GenHostility.AnyHostileActiveThreatToPlayer(map, true)))
                     {
                         deconstructShipEnemy.Disable(TranslatorFormattedStringExtensions.Translate("SalvageDeconstructDisabled"));
                     }
