@@ -56,7 +56,7 @@ namespace SaveOurShipPatch
                     }
                 });
             }
-            ActiveTransporterInfo activeDropPodInfo = new ActiveTransporterInfo
+            ActiveDropPodInfo activeDropPodInfo = new ActiveDropPodInfo
             {
                 innerContainer = thing_owner,
                 leaveSlag = false
